@@ -1,4 +1,4 @@
-# Project Name
+# Texas Hold'em
 ## Project Summary
 <!-- Around 200 Words -->
 <!-- Cover (1) What problem you are solving, (2) Who will use this RL module and be happy with the learning, and (3) a brief description of the results -->
