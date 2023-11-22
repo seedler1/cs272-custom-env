@@ -3,11 +3,10 @@ from gymnasium import spaces
 
 class PokerWorldEnv(gym.Env):
     def __init__(self):
-        # We have 3 actions, corresponding to "Call", "Raise", "Fold"
+        # We have 3 actions, corresponding to "Check", "Raise", "Fold"
         self.action_space = spaces.Discrete(3)
         
-        # Observations are dictionaries with the agent's and the target's location.
-        # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
+       
         self.observation_space = spaces.Dict(
             {
                 "agent": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)),
@@ -24,9 +23,8 @@ class PokerWorldEnv(gym.Env):
         )
         
         self._actions = {
-            0: 20, # Call
-            1: 40, # Raise
-            2: 0, # Check
+            1: 0, # Check
+            2: 100, # Raise
             3: 0 # Fold
         }
         
@@ -45,7 +43,17 @@ class PokerWorldEnv(gym.Env):
                 "cards": self._cards, "pot": self._pot, "agent_stack": self.agent_stack, 
                 "vilain_stack": self.villain_stack}
 
+# %%
+# We can also implement a similar method for the auxiliary information
+# that is returned by ``step`` and ``reset``. In our case, we would like
+# to provide the manhattan distance between the agent and the target:
 
+    def _get_info(self):
+        return {
+            "distance": np.linalg.norm(
+                self._agent_location - self._target_location, ord=1
+            )
+        }
         
 # %%
 # Oftentimes, info will also contain some data that is only available
@@ -114,6 +122,17 @@ class PokerWorldEnv(gym.Env):
 # use of ``_get_obs`` and ``_get_info``:
 
     def step(self, action):
+        
+        if action == 1: # If the agent decides to check
+            pass
+        elif action == 2: # If the agent decides to raise
+            pass
+        elif action == 3:# If the agent decides to raise
+            pass
+        
+        
+        
+        
         # Map the action (element of {0,1,2,3}) to the direction we walk in
         direction = self._action_to_direction[action]
         # We use `np.clip` to make sure we don't leave the grid
