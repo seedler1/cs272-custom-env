@@ -1,4 +1,5 @@
 import gymnasium as gym
+import random
 from gymnasium import spaces
 
 class PokerWorldEnv(gym.Env):
@@ -27,6 +28,24 @@ class PokerWorldEnv(gym.Env):
             2: 100, # Raise
             3: 0 # Fold
         }
+
+# %%
+# Getting the kind of hands that either play has given their hole cards and 
+# what's on the board
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Author: Jennifer Chun
+        
+    def _hands(self, hole_cards):
+        pass
+    
+# %%
+# If the villain "has something" (in our case, means the villain has 
+# something greater than just "high card") 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Author: Jennifer Chun
+
+    def _has_something(self, hole_cards):
+       pass 
         
 # %%
 # Constructing Observations From Environment States
@@ -40,19 +59,17 @@ class PokerWorldEnv(gym.Env):
 
     def _get_obs(self):
         return {"agent": self._agent_cards, "villain": self._villain_cards,
-                "cards": self._cards, "pot": self._pot, "agent_stack": self.agent_stack, 
-                "vilain_stack": self.villain_stack}
+                "cards": self._cards, "pot": self._pot, "agent_stack": self._agent_stack, 
+                "vilain_stack": self._villain_stack}
 
 # %%
 # We can also implement a similar method for the auxiliary information
 # that is returned by ``step`` and ``reset``. In our case, we would like
-# to provide the manhattan distance between the agent and the target:
+# to provide what kind of hand the hero has:
 
     def _get_info(self):
         return {
-            "distance": np.linalg.norm(
-                self._agent_location - self._target_location, ord=1
-            )
+            "hands": self._hands(self._agent_cards)
         }
         
 # %%
@@ -85,30 +102,20 @@ class PokerWorldEnv(gym.Env):
 # ``_get_info`` that we implemented earlier for that:
 
     def reset(self, seed=None, options=None):
-        # We need the following line to seed self.np_random
-        super().reset(seed=seed)
-
-        # Choose the agent's location uniformly at random
-        self._agent_location = self.np_random.integers(0, self.size, size=2, dtype=int)
-
-        # We will sample the target's location randomly until it does not coincide with the agent's location
-        self._target_location = self._agent_location
-        while np.array_equal(self._target_location, self._agent_location):
-            self._target_location = self.np_random.integers(
-                0, self.size, size=2, dtype=int
-            )
+        
 
         observation = self._get_obs()
         info = self._get_info()
 
-        if self.render_mode == "human":
-            self._render_frame()
 
         return observation, info
 
 # %%
 # Step
 # ~~~~
+# In our simplified game version, the agent will always go first postflop.
+# This does not occur in a real game, where players will alternate going first
+# postflop. 
 #
 # The ``step`` method usually contains most of the logic of your
 # environment. It accepts an ``action``, computes the state of the
@@ -124,29 +131,35 @@ class PokerWorldEnv(gym.Env):
     def step(self, action):
         
         if action == 1: # If the agent decides to check
-            pass
+            if (self._has_something(self._villain_cards)):
+                if random.random() <= 0.75: 
+                    pass
+                else:
+                    pass
+            else:
+                if random.random() <= 0.45: 
+                    pass 
+                else:
+                    pass
         elif action == 2: # If the agent decides to raise
-            pass
-        elif action == 3:# If the agent decides to raise
-            pass
+            if (self._has_something(self._villain_cards)):
+                if random.random() <= 0.80: 
+                    pass
+                else:
+                    pass
+            else:
+                if random.random() <= 0.20: 
+                    pass 
+                else:
+                    pass
+
         
-        
-        
-        
-        # Map the action (element of {0,1,2,3}) to the direction we walk in
-        direction = self._action_to_direction[action]
-        # We use `np.clip` to make sure we don't leave the grid
-        self._agent_location = np.clip(
-            self._agent_location + direction, 0, self.size - 1
-        )
         # An episode is done iff the agent has reached the target
-        terminated = np.array_equal(self._agent_location, self._target_location)
+        terminated = self._villain_stack == 200 or self._hero_stack == 200
         reward = 1 if terminated else -1  # Binary sparse rewards
         observation = self._get_obs()
         info = self._get_info()
 
-        if self.render_mode == "human":
-            self._render_frame()
 
         return observation, reward, terminated, False, info        
     
