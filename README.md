@@ -25,7 +25,7 @@ Villain's Stack Size ($100)
 ## Action Space
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
 The action is a dictionary mapping with the following mapping
-1 : Raise $100 
+1 : Raise $100 ,
 2 : Fold
 ## Rewards
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
@@ -37,9 +37,11 @@ A reward of -1 is given if the agent loses the hand.
 
 ## Starting State [if applicable]
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
+At the start, each player will be dealt two cards and five cards will be dealt on the table. Also, each player will start with a stack of $100. 
 
 ## Episode End [if applicable]
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
+The episode will end in one of several scenarios: the agent folds, if the agent raises and the villain folds, and if the agent raises, the villain raises, and they go to showdown.  
 
 ## Results
 
