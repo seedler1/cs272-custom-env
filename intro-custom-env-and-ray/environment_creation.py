@@ -108,7 +108,7 @@ class GridWorldEnv(gym.Env):
 
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
-        self.observation_space = spaces.Dict(
+        self.observation_space = spaces.Dict(   ## observation space/ state space
             {
                 "agent": spaces.Box(0, size - 1, shape=(2,), dtype=int),
                 "target": spaces.Box(0, size - 1, shape=(2,), dtype=int),
@@ -116,14 +116,14 @@ class GridWorldEnv(gym.Env):
         )
 
         # We have 4 actions, corresponding to "right", "up", "left", "down"
-        self.action_space = spaces.Discrete(4)
+        self.action_space = spaces.Discrete(4) ## action space
 
         """
         The following dictionary maps abstract actions from `self.action_space` to
         the direction we will walk in if that action is taken.
         I.e. 0 corresponds to "right", 1 to "up" etc.
         """
-        self._action_to_direction = {
+        self._action_to_direction = {         ## action mapping
             0: np.array([1, 0]),
             1: np.array([0, 1]),
             2: np.array([-1, 0]),
@@ -243,7 +243,7 @@ class GridWorldEnv(gym.Env):
         )
         # An episode is done iff the agent has reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
-        reward = 1 if terminated else -1  # Binary sparse rewards
+        reward = 1 if terminated else -1  # Binary sparse rewards ## reward
         observation = self._get_obs()
         info = self._get_info()
 

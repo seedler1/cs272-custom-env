@@ -30,6 +30,15 @@ class PokerWorldEnv(gym.Env):
         }
 
 # %%
+# Dealing a specified number of cards from the deck with their corresponding
+# suit and rank
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Author: Jennifer Chun
+
+    def _deal(self, num_cards):
+        pass
+
+# %%
 # Getting the kind of hands that either play has given their hole cards and 
 # what's on the board
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
