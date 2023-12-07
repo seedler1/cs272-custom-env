@@ -4,7 +4,7 @@ from gymnasium import spaces
 
 class PokerWorldEnv(gym.Env):
     def __init__(self):
-        # We have 3 actions, corresponding to "Check", "Raise", "Fold"
+        # We have 2 actions, corresponding to "Raise", "Fold"
         self.action_space = spaces.Discrete(3)
         
        
@@ -24,14 +24,13 @@ class PokerWorldEnv(gym.Env):
         )
         
         self._actions = {
-            1: 0, # Check
-            2: 100, # Raise
-            3: 0 # Fold
+            1: 100, # Raise
+            2: 0 # Fold
         }
 
 # %%
-# Getting the kind of hands that either play has given their hole cards and 
-# what's on the board
+# Getting the kind of hands (ranking) that either play has given their hole cards
+# and what's on the board.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
         
@@ -129,34 +128,35 @@ class PokerWorldEnv(gym.Env):
 # use of ``_get_obs`` and ``_get_info``:
 
     def step(self, action):
+        tied = False # If the hero and villain has the same hand. 
+        villain_folded = False# If the villain decides to fold
         
-        if action == 1: # If the agent decides to check
+        if action == 1: # If the agent decides to Raise
             if (self._has_something(self._villain_cards)):
                 if random.random() <= 0.75: 
                     pass
                 else:
-                    pass
+                    villain_folded = True
             else:
-                if random.random() <= 0.45: 
+                if random.random() <= 0.10: 
                     pass 
                 else:
-                    pass
-        elif action == 2: # If the agent decides to raise
-            if (self._has_something(self._villain_cards)):
-                if random.random() <= 0.80: 
-                    pass
-                else:
-                    pass
-            else:
-                if random.random() <= 0.20: 
-                    pass 
-                else:
-                    pass
-
+                    villain_folded = True
+        elif action == 2: # Agent decides to fold
+            pass 
+        
         
         # An episode is done iff the agent has reached the target
-        terminated = self._villain_stack == 200 or self._hero_stack == 200
-        reward = 1 if terminated else -1  # Binary sparse rewards
+        terminated = self._villain_stack == 200 or self._hero_stack == 200 or action == 2 or tied or villain_folded
+        if (terminated and self._hero_stack == 200 and self._villain_stack == 0) or (terminated and villain_folded):
+            reward = 1
+        elif terminated and action == 2:
+            reward = 0
+        elif terminated and tied:
+            reward = 0
+        elif terminated and self._villain_stack == 200 and self._hero_stack == 0:
+            reward = -1
+        
         observation = self._get_obs()
         info = self._get_info()
 
