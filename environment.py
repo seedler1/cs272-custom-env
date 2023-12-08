@@ -27,6 +27,18 @@ class PokerWorldEnv(gym.Env):
             1: 100, # Raise
             2: 0 # Fold
         }
+        
+# %%
+# Dealing the cards
+# Parameters:
+#   num_of_cards : The number of cards dealt
+# Returns:
+#   A tuple of number representing the cards
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Author: Jennifer Chun
+        
+    def _deal(self, num_of_cards):
+        pass
 
 # %%
 # Getting the kind of hands (ranking) that either play has given their hole cards
@@ -102,6 +114,12 @@ class PokerWorldEnv(gym.Env):
 
     def reset(self, seed=None, options=None):
         
+        self._villain_cards = self._deal(2)
+        self._agent_cards = self._deal(2)
+        self._cards = self._deal(5)
+        
+        self._villain_stack = 100
+        self._hero_stack = 100
 
         observation = self._get_obs()
         info = self._get_info()
@@ -129,21 +147,41 @@ class PokerWorldEnv(gym.Env):
 
     def step(self, action):
         tied = False # If the hero and villain has the same hand. 
-        villain_folded = False# If the villain decides to fold
+        villain_folded = False # If the villain decides to fold
+        villain_raised = False # If the villain decides to raise.
         
         if action == 1: # If the agent decides to Raise
             if (self._has_something(self._villain_cards)):
                 if random.random() <= 0.75: 
-                    pass
+                    villain_raised = True
+                    if self._hands(self._villain_cards) > self._hands(self._hero_cards):
+                        self._villain_stack = 200
+                        self._hero_stack = 0
+                    elif self._hands(self._hero_cards) > self._hands(self._villain_cards):
+                        self._villain_stack = 0
+                        self._hero_stack = 200
+                    else:
+                        self._villain_stack = 100
+                        self._hero_stack = 100
                 else:
                     villain_folded = True
             else:
                 if random.random() <= 0.10: 
-                    pass 
+                    villain_raised = True 
+                    if self._hands(self._villain_cards) > self._hands(self._hero_cards):
+                        self._villain_stack = 200
+                        self._hero_stack = 0
+                    elif self._hands(self._hero_cards) > self._hands(self._villain_cards):
+                        self._villain_stack = 0
+                        self._hero_stack = 200
+                    else:
+                        self._villain_stack = 100
+                        self._hero_stack = 100
                 else:
                     villain_folded = True
         elif action == 2: # Agent decides to fold
-            pass 
+            self._villain_stack = 100
+            self._hero_stack = 100
         
         
         # An episode is done iff the agent has reached the target
