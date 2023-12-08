@@ -34,7 +34,7 @@ The action is a dictionary with the following mapping
 ## Rewards
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
 - A reward of 1 is given if the agent wins the hand.
-- A reward of 0 if the agent ties with the villain or folds.
+- A reward of 0 if the agent ties with the villain or if the agent folds.
 - A reward of -1 is given if the agent loses the hand.
 
 ## RL Algorithm 
