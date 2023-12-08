@@ -5,9 +5,9 @@ from gymnasium import spaces
 
 
 # Hand classes that can keep track of the cards of the agent, villain, and table respectively
-agent = poker.Hand('Agent')
-villain = poker.Hand('Villain')
-table = poker.Hand('Table')
+# agent = poker.Hand('Agent')
+# villain = poker.Hand('Villain')
+# table = poker.Hand('Table')
 
 
 class PokerWorldEnv(gym.Env):
@@ -221,8 +221,13 @@ class PokerWorldEnv(gym.Env):
 
         # if want to get the best hand details for both the agent and villain in one quick part
         # so we don't need to access things later
+        # only if we just want the hand value
         agent_hand_value = self._hands(agent, table)
         villain_hand_value = self._hands(villain, table)
+
+        # if we want to get the hand value AND the highest card (need to modify _hands() based on what we want)
+        # agent_hand_value, agent_highest_card = self._hands(agent, table)
+        # villain_hand_value, villain_highest_card = self._hands(villain, table)
 
         self._villain_stack = 100
         self._hero_stack = 100
