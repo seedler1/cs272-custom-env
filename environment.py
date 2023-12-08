@@ -14,12 +14,16 @@ class PokerWorldEnv(gym.Env):
     def __init__(self):
         # We have 2 actions, corresponding to "Raise", "Fold"
         self.action_space = spaces.Discrete(2)
-        
-       
+
+        # any of the following are okay for the observation space (1,2), "2 of hearts", "2H"
         self.observation_space = spaces.Dict(
             {
                 "agent": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)),
-                "villain": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)),
+                "agent's best hand": int,
+                "agent's highest card": int,
+                "villain": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)), #unknown to agent
+                "villain's best hand": int, #unknown to agent
+                "villain's highest card": int, #unknown to agent
                 "table": spaces.Tuple(spaces.Discrete(52),
                                       spaces.Discrete(52),
                                       spaces.Discrete(52),
