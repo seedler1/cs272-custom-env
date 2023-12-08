@@ -1,6 +1,9 @@
 import gymnasium as gym
 import random
+import poker  # https://github.com/Sondar4/poker-sim/blob/master/poker.py
 from gymnasium import spaces
+
+
 
 class PokerWorldEnv(gym.Env):
     def __init__(self):
@@ -12,7 +15,7 @@ class PokerWorldEnv(gym.Env):
             {
                 "agent": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)),
                 "villain": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)),
-                "cards": spaces.Tuple(spaces.Discrete(52), 
+                "table": spaces.Tuple(spaces.Discrete(52),
                                       spaces.Discrete(52),
                                       spaces.Discrete(52),
                                       spaces.Discrete(52), 
@@ -35,17 +38,58 @@ class PokerWorldEnv(gym.Env):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
 
-    def _deal(self, num_cards):
-        pass
+    def _deal(self):
+        """Shuffles the deck then deals all cards to the agent, the villain, and the table
+
+        Returns the cards of the agent, villain, and table respectively
+
+        Deck of cards is class Deck
+
+        Hand (applying to agent, villain, and table) are of class Hand
+
+        Cards are in the form of class Card
+        :returns agent's hand, villain's hand, and table's hand(cards)
+        """
+        # creates then shuffles the deck
+        deck = poker.Deck()
+        deck.shuffle()
+
+        # gives corresponding cards to the players and the table
+        agent = poker.Hand('Agent')
+        villain = poker.Hand('Villain')
+        table = poker.Hand('Table')
+
+        deck.move_cards(agent, 2)
+        deck.move_cards(villain, 2)
+        deck.move_cards(table, 5)
+
+        # 12-8-23 10:15 AM
+        # How to access the observations spaces from this method???
+        #self.observation_space. ???
+        return agent, villain, table
+
+        #pass
+
+
 
 # %%
 # Getting the kind of hands that either play has given their hole cards and 
 # what's on the board
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
-        
-    def _hands(self, hole_cards):
-        pass
+
+    #def _hands(self, hole_cards):
+    def _hands(self, player, table):
+        """
+        Returns the details of the best hand that the player has (hand value, name of hand, and highest card)
+        :param player: the player's cards (class Card)
+        :param table: the table's cards (class Card)
+        :returns hand value, name of hand (string), and highest card value
+        """
+        hand_value, hand_name, cards = player.best_hand(table)
+        highest_card = cards[0]
+        return hand_value, hand_name, highest_card
+        #pass
     
 # %%
 # If the villain "has something" (in our case, means the villain has 
@@ -53,8 +97,21 @@ class PokerWorldEnv(gym.Env):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
 
-    def _has_something(self, hole_cards):
-       pass 
+    #def _has_something(self, hole_cards):
+     #  pass
+
+    def _has_something(self, villain, table):
+       """
+       Returns a boolean based on whether villain has a hand that's not a "high card"
+       :param villain: villain's cards
+       :param table: table's cards
+       :return: boolean whether villain has a hand that's not a "high card"
+       """
+       if self._hands(villain, table)[0] != 0:
+           return True
+       return False
+
+       #pass
         
 # %%
 # Constructing Observations From Environment States
