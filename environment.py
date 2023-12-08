@@ -4,11 +4,16 @@ import poker  # https://github.com/Sondar4/poker-sim/blob/master/poker.py
 from gymnasium import spaces
 
 
+# Hand classes that can keep track of the cards of the agent, villain, and table respectively
+agent = poker.Hand('Agent')
+villain = poker.Hand('Villain')
+table = poker.Hand('Table')
+
 
 class PokerWorldEnv(gym.Env):
     def __init__(self):
-        # We have 3 actions, corresponding to "Check", "Raise", "Fold"
-        self.action_space = spaces.Discrete(3)
+        # We have 2 actions, corresponding to "Raise", "Fold"
+        self.action_space = spaces.Discrete(2)
         
        
         self.observation_space = spaces.Dict(
@@ -27,18 +32,34 @@ class PokerWorldEnv(gym.Env):
         )
         
         self._actions = {
-            1: 0, # Check
-            2: 100, # Raise
-            3: 0 # Fold
+            1: 100, # Raise
+            2: 0 # Fold
         }
+        
+# # %% Following won't work well bc we would need to call the deck three separate times
+# # Dealing the cards
+# # Parameters:
+# #   num_of_cards : The number of cards dealt
+# # Returns:
+# #   A tuple of number representing the cards
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # Author: Jennifer Chun
+#
+#     def _deal(self, num_of_cards):
+#         """
+#         Deals specified number of cards to the player
+#         """
+#
+#         #pass
 
 # %%
+#<<<<<<< HEAD
 # Dealing a specified number of cards from the deck with their corresponding
 # suit and rank
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
 
-    def _deal(self):
+    def _deal_all(self):
         """Shuffles the deck then deals all cards to the agent, the villain, and the table
 
         Returns the cards of the agent, villain, and table respectively
@@ -75,6 +96,10 @@ class PokerWorldEnv(gym.Env):
 # %%
 # Getting the kind of hands that either play has given their hole cards and 
 # what's on the board
+#=======
+# Getting the kind of hands (ranking) that either play has given their hole cards
+# and what's on the board.
+#>>>>>>> b6f2d1bb4638cc2d2d06b14ba061ddb163b245d4
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
 
@@ -88,7 +113,9 @@ class PokerWorldEnv(gym.Env):
         """
         hand_value, hand_name, cards = player.best_hand(table)
         highest_card = cards[0]
-        return hand_value, hand_name, highest_card
+        #return hand_value, hand_name, highest_card # if we want all details
+        #return hand_value, highest_card  # if we want only the hand value and the highest card
+        return hand_value # if we want only the hand value
         #pass
     
 # %%
@@ -125,8 +152,8 @@ class PokerWorldEnv(gym.Env):
 
     def _get_obs(self):
         return {"agent": self._agent_cards, "villain": self._villain_cards,
-                "cards": self._cards, "pot": self._pot, "agent_stack": self._agent_stack, 
-                "vilain_stack": self._villain_stack}
+                "table": self._table, "pot": self._pot, "agent_stack": self._agent_stack,
+                "villain_stack": self._villain_stack}
 
 # %%
 # We can also implement a similar method for the auxiliary information
@@ -168,7 +195,37 @@ class PokerWorldEnv(gym.Env):
 # ``_get_info`` that we implemented earlier for that:
 
     def reset(self, seed=None, options=None):
-        
+
+        # if trying to deal cards separately (may run into issues if using classes)
+        # self._villain_cards = self._deal(2)
+        # self._agent_cards = self._deal(2)
+        # self._cards = self._deal(5)
+
+        # if dealing cards altogether, output the respective classes of Hand
+        agent, villain, table = self._deal_all()
+
+        # only needed if we need to access the Hand classes outside this function
+        # global agent = agent
+        # global villain = villain
+        # global table = table
+
+        # if okay with cards in being a list of tuples
+        # self._agent_cards = agent.print_list_tuple()
+        # self._villain_cards = agent.print_list_tuple()
+        # self._cards = agent.print_list_tuple()
+
+        # if want cards for each to be a tuple of tuples
+        self._agent_cards = agent.print_tuple_tuple()
+        self._villain_cards = agent.print_tuple_tuple()
+        self._cards = agent.print_tuple_tuple()
+
+        # if want to get the best hand details for both the agent and villain in one quick part
+        # so we don't need to access things later
+        agent_hand_value = self._hands(agent, table)
+        villain_hand_value = self._hands(villain, table)
+
+        self._villain_stack = 100
+        self._hero_stack = 100
 
         observation = self._get_obs()
         info = self._get_info()
@@ -195,34 +252,55 @@ class PokerWorldEnv(gym.Env):
 # use of ``_get_obs`` and ``_get_info``:
 
     def step(self, action):
+        tied = False # If the hero and villain has the same hand. 
+        villain_folded = False # If the villain decides to fold
+        villain_raised = False # If the villain decides to raise.
         
-        if action == 1: # If the agent decides to check
+        if action == 1: # If the agent decides to Raise
             if (self._has_something(self._villain_cards)):
                 if random.random() <= 0.75: 
-                    pass
+                    villain_raised = True
+                    if self._hands(self._villain_cards) > self._hands(self._hero_cards):
+                        self._villain_stack = 200
+                        self._hero_stack = 0
+                    elif self._hands(self._hero_cards) > self._hands(self._villain_cards):
+                        self._villain_stack = 0
+                        self._hero_stack = 200
+                    else:
+                        self._villain_stack = 100
+                        self._hero_stack = 100
                 else:
-                    pass
+                    villain_folded = True
             else:
-                if random.random() <= 0.45: 
-                    pass 
+                if random.random() <= 0.10: 
+                    villain_raised = True 
+                    if self._hands(self._villain_cards) > self._hands(self._hero_cards):
+                        self._villain_stack = 200
+                        self._hero_stack = 0
+                    elif self._hands(self._hero_cards) > self._hands(self._villain_cards):
+                        self._villain_stack = 0
+                        self._hero_stack = 200
+                    else:
+                        self._villain_stack = 100
+                        self._hero_stack = 100
                 else:
-                    pass
-        elif action == 2: # If the agent decides to raise
-            if (self._has_something(self._villain_cards)):
-                if random.random() <= 0.80: 
-                    pass
-                else:
-                    pass
-            else:
-                if random.random() <= 0.20: 
-                    pass 
-                else:
-                    pass
-
+                    villain_folded = True
+        elif action == 2: # Agent decides to fold
+            self._villain_stack = 100
+            self._hero_stack = 100
+        
         
         # An episode is done iff the agent has reached the target
-        terminated = self._villain_stack == 200 or self._hero_stack == 200
-        reward = 1 if terminated else -1  # Binary sparse rewards
+        terminated = self._villain_stack == 200 or self._hero_stack == 200 or action == 2 or tied or villain_folded
+        if (terminated and self._hero_stack == 200 and self._villain_stack == 0) or (terminated and villain_folded):
+            reward = 1
+        elif terminated and action == 2:
+            reward = 0
+        elif terminated and tied:
+            reward = 0
+        elif terminated and self._villain_stack == 200 and self._hero_stack == 0:
+            reward = -1
+        
         observation = self._get_obs()
         info = self._get_info()
 

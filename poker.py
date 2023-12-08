@@ -27,7 +27,7 @@ class Card:
         :param rank: rank of card (defaults to 2)
         """
         if type(rank) != int or type(suit) != int:
-            print('Card atributes must be int type')
+            print('Card attributes must be int type')
             raise TypeError
         else:
             self.suit = suit
@@ -40,6 +40,13 @@ class Card:
         """
         return '%s of %s' % (Card.rank_names[self.rank],
                              Card.suit_names[self.suit])
+
+    def print_tuple(self):
+        """
+        Returns the card as a tuple
+        :return: tuple (suit, rank)
+        """
+        return self.suit, self.rank
 
     def __lt__(self, other):
         """
@@ -74,6 +81,29 @@ class Deck:
         for card in self.cards:
             res.append(str(card))
         return '\n'.join(res)
+
+    def print_list_tuple(self):
+        """
+        Returns the cards in the deck as a list of tuples, where each tuple has suit followed by rank
+        :return: list of tuples
+        """
+        list_tuple = []
+        for card in self.cards:
+            list_tuple.insert(1, card.print_tuple())
+        return list_tuple
+
+    def print_tuple_tuple(self):
+        """
+        Returns the cards in the deck as a tuple of tuples, where each tuple has suit followed by rank
+        :return: tuple of tuples
+        """
+        # tuples are immutable, so we need to know how many tuples will be in each
+        num_cards = len(self.cards)
+        if num_cards == 2: # if hand of agent or villain
+            tuple_tuple = (self.cards[0].print_tuple, self.cards[1].print_tuple)
+        else: # if table
+            tuple_tuple = (self.cards[0].print_tuple, self.cards[1].print_tuple, self.cards[2].print_tuple, self.cards[3].print_tuple, self.cards[4].print_tuple)
+        return tuple_tuple
 
     def shuffle(self):
         """
