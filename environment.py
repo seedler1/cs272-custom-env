@@ -1,18 +1,30 @@
 import gymnasium as gym
 import random
+import poker  # https://github.com/Sondar4/poker-sim/blob/master/poker.py
 from gymnasium import spaces
+
+
+# Hand classes that can keep track of the cards of the agent, villain, and table respectively
+# agent = poker.Hand('Agent')
+# villain = poker.Hand('Villain')
+# table = poker.Hand('Table')
+
 
 class PokerWorldEnv(gym.Env):
     def __init__(self):
         # We have 2 actions, corresponding to "Raise", "Fold"
-        self.action_space = spaces.Discrete(3)
-        
-       
+        self.action_space = spaces.Discrete(2)
+
+        # any of the following are okay for the observation space (1,2), "2 of hearts", "2H"
         self.observation_space = spaces.Dict(
             {
                 "agent": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)),
-                "villain": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)),
-                "cards": spaces.Tuple(spaces.Discrete(52), 
+                "agent's best hand": int,
+                "agent's highest card": int,
+                "villain": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)), #unknown to agent
+                "villain's best hand": int, #unknown to agent
+                "villain's highest card": int, #unknown to agent
+                "table": spaces.Tuple(spaces.Discrete(52),
                                       spaces.Discrete(52),
                                       spaces.Discrete(52),
                                       spaces.Discrete(52), 
@@ -27,27 +39,89 @@ class PokerWorldEnv(gym.Env):
             1: 100, # Raise
             2: 0 # Fold
         }
-        
-# %%
-# Dealing the cards
-# Parameters:
-#   num_of_cards : The number of cards dealt
-# Returns:
-#   A tuple of number representing the cards
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Author: Jennifer Chun
-        
-    def _deal(self, num_of_cards):
-        pass
+
+        # pls change
+# # %% Following won't work well bc we would need to call the deck three separate times
+# # Dealing the cards
+# # Parameters:
+# #   num_of_cards : The number of cards dealt
+# # Returns:
+# #   A tuple of number representing the cards
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # Author: Jennifer Chun
+#
+#     def _deal(self, num_of_cards):
+#         """
+#         Deals specified number of cards to the player
+#         """
+#
+#         #pass
 
 # %%
-# Getting the kind of hands (ranking) that either play has given their hole cards
-# and what's on the board.
+#<<<<<<< HEAD
+# Dealing a specified number of cards from the deck with their corresponding
+# suit and rank
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
-        
-    def _hands(self, hole_cards):
-        pass
+
+    def _deal_all(self):
+        """Shuffles the deck then deals all cards to the agent, the villain, and the table
+
+        Returns the cards of the agent, villain, and table respectively
+
+        Deck of cards is class Deck
+
+        Hand (applying to agent, villain, and table) are of class Hand
+
+        Cards are in the form of class Card
+        :returns agent's hand, villain's hand, and table's hand(cards)
+        """
+        # creates then shuffles the deck
+        deck = poker.Deck()
+        deck.shuffle()
+
+        # gives corresponding cards to the players and the table
+        agent = poker.Hand('Agent')
+        villain = poker.Hand('Villain')
+        table = poker.Hand('Table')
+
+        deck.move_cards(agent, 2)
+        deck.move_cards(villain, 2)
+        deck.move_cards(table, 5)
+
+        # 12-8-23 10:15 AM
+        # How to access the observations spaces from this method???
+        #self.observation_space. ???
+        return agent, villain, table
+
+        #pass
+
+
+
+# %%
+# Getting the kind of hands that either play has given their hole cards and 
+# what's on the board
+#=======
+# Getting the kind of hands (ranking) that either play has given their hole cards
+# and what's on the board.
+#>>>>>>> b6f2d1bb4638cc2d2d06b14ba061ddb163b245d4
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Author: Jennifer Chun
+
+    #def _hands(self, hole_cards):
+    def _hands(self, player, table):
+        """
+        Returns the details of the best hand that the player has (hand value, name of hand, and highest card)
+        :param player: the player's cards (class Card)
+        :param table: the table's cards (class Card)
+        :returns hand value, name of hand (string), and highest card value
+        """
+        hand_value, hand_name, cards = player.best_hand(table)
+        highest_card = cards[0]
+        #return hand_value, hand_name, highest_card # if we want all details
+        #return hand_value, highest_card  # if we want only the hand value and the highest card
+        return hand_value # if we want only the hand value
+        #pass
     
 # %%
 # If the villain "has something" (in our case, means the villain has 
@@ -55,8 +129,21 @@ class PokerWorldEnv(gym.Env):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
 
-    def _has_something(self, hole_cards):
-       pass 
+    #def _has_something(self, hole_cards):
+     #  pass
+
+    def _has_something(self, villain, table):
+       """
+       Returns a boolean based on whether villain has a hand that's not a "high card"
+       :param villain: villain's cards
+       :param table: table's cards
+       :return: boolean whether villain has a hand that's not a "high card"
+       """
+       if self._hands(villain, table)[0] != 0:
+           return True
+       return False
+
+       #pass
         
 # %%
 # Constructing Observations From Environment States
@@ -70,8 +157,8 @@ class PokerWorldEnv(gym.Env):
 
     def _get_obs(self):
         return {"agent": self._agent_cards, "villain": self._villain_cards,
-                "cards": self._cards, "pot": self._pot, "agent_stack": self._agent_stack, 
-                "vilain_stack": self._villain_stack}
+                "table": self._table, "pot": self._pot, "agent_stack": self._agent_stack,
+                "villain_stack": self._villain_stack}
 
 # %%
 # We can also implement a similar method for the auxiliary information
@@ -113,11 +200,40 @@ class PokerWorldEnv(gym.Env):
 # ``_get_info`` that we implemented earlier for that:
 
     def reset(self, seed=None, options=None):
-        
-        self._villain_cards = self._deal(2)
-        self._agent_cards = self._deal(2)
-        self._cards = self._deal(5)
-        
+
+        # if trying to deal cards separately (may run into issues if using classes)
+        # self._villain_cards = self._deal(2)
+        # self._agent_cards = self._deal(2)
+        # self._cards = self._deal(5)
+
+        # if dealing cards altogether, output the respective classes of Hand
+        agent, villain, table = self._deal_all()
+
+        # only needed if we need to access the Hand classes outside this function
+        # global agent = agent
+        # global villain = villain
+        # global table = table
+
+        # if okay with cards in being a list of tuples
+        # self._agent_cards = agent.print_list_tuple()
+        # self._villain_cards = agent.print_list_tuple()
+        # self._cards = agent.print_list_tuple()
+
+        # if want cards for each to be a tuple of tuples
+        self._agent_cards = agent.print_tuple_tuple()
+        self._villain_cards = agent.print_tuple_tuple()
+        self._cards = agent.print_tuple_tuple()
+
+        # if want to get the best hand details for both the agent and villain in one quick part
+        # so we don't need to access things later
+        # only if we just want the hand value
+        agent_hand_value = self._hands(agent, table)
+        villain_hand_value = self._hands(villain, table)
+
+        # if we want to get the hand value AND the highest card (need to modify _hands() based on what we want)
+        # agent_hand_value, agent_highest_card = self._hands(agent, table)
+        # villain_hand_value, villain_highest_card = self._hands(villain, table)
+
         self._villain_stack = 100
         self._hero_stack = 100
 
