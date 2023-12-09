@@ -6,6 +6,31 @@ Comments are based off the following reference: https://www.wikihow.com/Sample/P
 from random import shuffle #shuffles a list
 from pdb import set_trace
 
+"""
+card_dict = {('Clubs', '2'): 0, ('Clubs', '3'): 1, ('Clubs', '4'): 2, ('Clubs', '5'): 3, ('Clubs', '6'): 4, 
+             ('Clubs', '7'): 5, ('Clubs', '8'): 6, ('Clubs', '9'): 7, ('Clubs', '10'): 8, ('Clubs', 'Jack'): 9, 
+             ('Clubs', 'Queen'): 10, ('Clubs', 'King'): 11, ('Clubs', 'Ace'): 12, ('Diamonds', '2'): 13, ('Diamonds', '3'): 14, 
+             ('Diamonds', '4'): 15, ('Diamonds', '5'): 16, ('Diamonds', '6'): 17, ('Diamonds', '7'): 18, ('Diamonds', '8'): 19,
+             ('Diamonds', '9'): 20, ('Diamonds', '10'): 21, ('Diamonds', 'Jack'): 22, ('Diamonds', 'Queen'): 23, ('Diamonds', 'King'): 24,
+             ('Diamonds', 'Ace'): 25, ('Hearts', '2'): 26, ('Hearts', '3'): 27, ('Hearts', '4'): 28, ('Hearts', '5'): 29, ('Hearts', '6'): 30,
+             ('Hearts', '7'): 31, ('Hearts', '8'): 32, ('Hearts', '9'): 33, ('Hearts', '10'): 34, ('Hearts', 'Jack'): 35, ('Hearts', 'Queen'): 36,
+             ('Hearts', 'King'): 37, ('Hearts', 'Ace'): 38, ('Spades', '2'): 39, ('Spades', '3'): 40, ('Spades', '4'): 41, ('Spades', '5'): 42,
+             ('Spades', '6'): 43, ('Spades', '7'): 44, ('Spades', '8'): 45, ('Spades', '9'): 46, ('Spades', '10'): 47, ('Spades', 'Jack'): 48,
+             ('Spades', 'Queen'): 49, ('Spades', 'King'): 50, ('Spades', 'Ace'): 51}
+"""
+
+card_dict = {(0, 2): 0, (0, 3): 1, (0, 4): 2, (0, 5): 3, (0, 6): 4, (0, 7): 5, 
+             (0, 8): 6, (0, 9): 7, (0, 10): 8, (0, 11): 9, (0, 12): 10, (0, 13): 11,
+             (0, 14): 12, (1, 2): 13, (1, 3): 14, (1, 4): 15, (1, 5): 16, (1, 6): 17,
+             (1, 7): 18, (1, 8): 19, (1, 9): 20, (1, 10): 21, (1, 11): 22, (1, 12): 23, (1, 13): 24,
+             (1, 14): 25, (2, 2): 26, (2, 3): 27, (2, 4): 28, (2, 5): 29, (2, 6): 30, (2, 7): 31, (2, 8): 32,
+             (2, 9): 33, (2, 10): 34, (2, 11): 35, (2, 12): 36, (2, 13): 37, (2, 14): 38, (3, 2): 39, (3, 3): 40,
+             (3, 4): 41, (3, 5): 42, (3, 6): 43, (3, 7): 44, (3, 8): 45, (3, 9): 46, (3, 10): 47, (3, 11): 48,
+             (3, 12): 49, (3, 13): 50, (3, 14): 51}
+
+suits = [0,1,2,3]
+ranks = [2,3,4,5,6,7,8,9,10,11,12,13,14]
+
 
 def card_to_int(suit, rank):
     """
@@ -43,6 +68,9 @@ class Card:
     suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
     rank_names = [None, None, '2', '3', '4', '5', '6', '7',
                   '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+    
+    
+    
 
     def __init__(self, suit=0, rank=2):
         """
@@ -78,7 +106,8 @@ class Card:
         Returns the card as a tuple
         :return: tuple (suit, rank)
         """
-        return self.suit, self.rank
+        return (self.suit, self.rank)
+        #return card_dict[(self.suit, self.rank)]
 
     def __lt__(self, other):
         """
@@ -103,6 +132,11 @@ class Deck:
         """
         used_pairs = [(card.suit, card.rank) for card in used_cards]
         self.cards = [Card(x, y + 2) for x in range(4) for y in range(13) if (x, y) not in used_pairs]
+        self.card_dict = {(suit, rank) : 0 for suit in suits for rank in ranks}
+        n = 0
+        for i in self.card_dict:
+            self.card_dict[i] += n 
+            n += 1
 
     def __str__(self):
         """
@@ -132,9 +166,49 @@ class Deck:
         # tuples are immutable, so we need to know how many tuples will be in each
         num_cards = len(self.cards)
         if num_cards == 2: # if hand of agent or villain
-            tuple_tuple = (self.cards[0].print_tuple, self.cards[1].print_tuple)
+           tuple_tuple = (self.cards[0].print_tuple, self.cards[1].print_tuple)
+         #   tuple_tuple = (card_dict[self.cards[0].print_tuple()], card_dict[self.cards[1].print_tuple()])
         else: # if table
-            tuple_tuple = (self.cards[0].print_tuple, self.cards[1].print_tuple, self.cards[2].print_tuple, self.cards[3].print_tuple, self.cards[4].print_tuple)
+            #print(card_dict[self.cards[0].print_tuple()])
+           """
+            tuple_tuple = (card_dict[self.cards[0].print_tuple()], 
+                           card_dict[self.cards[1].print_tuple()],
+                           card_dict[self.cards[2].print_tuple()],
+                           card_dict[self.cards[3].print_tuple()],
+                           card_dict[self.cards[4].print_tuple()])
+            
+            """
+           tuple_tuple = (self.cards[0].print_tuple, 
+                           self.cards[1].print_tuple,
+                           self.cards[2].print_tuple,
+                           self.cards[3].print_tuple,
+                           self.cards[4].print_tuple)
+          
+            
+        return tuple_tuple
+    
+    def print_tuple_tuple_tuple(self):
+        """
+        Returns the cards in the deck as a tuple of tuples, where each tuple has suit followed by rank
+        :return: tuple of tuples
+        """
+        # tuples are immutable, so we need to know how many tuples will be in each
+        num_cards = len(self.cards)
+        if num_cards == 2: # if hand of agent or villain
+         #  tuple_tuple = (self.cards[0].print_tuple(), self.cards[1].print_tuple())
+            tuple_tuple = (card_dict[self.cards[0].print_tuple()], card_dict[self.cards[1].print_tuple()])
+        else: # if table
+            #print(card_dict[self.cards[0].print_tuple()])
+           
+            tuple_tuple = (card_dict[self.cards[0].print_tuple()], 
+                           card_dict[self.cards[1].print_tuple()],
+                           card_dict[self.cards[2].print_tuple()],
+                           card_dict[self.cards[3].print_tuple()],
+                           card_dict[self.cards[4].print_tuple()])
+            
+            
+          
+            
         return tuple_tuple
 
     def shuffle(self):
@@ -178,6 +252,7 @@ class Hand(Deck):
         Initializes a hand's name (player or table)
         :param label: player or table (defaults to empty string)
         """
+        super().__init__()
         self.cards = []
         self.label = label
 

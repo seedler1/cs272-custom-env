@@ -17,14 +17,17 @@ if __name__ == '__main__':
         iteration += 1
         deck1 = poker.Deck()
         deck1.shuffle()
+       # print(deck1.card_dict)
 
         players = list()
         for name in names:
             players.append(poker.Hand(name))
         table = poker.Hand('Table')
+        
 
         for player in players:
             deck1.move_cards(player, 2)
+          #  print(deck1.print_tuple_tuple())
         deck1.move_cards(table, 5)
 
         results = list()

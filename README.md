@@ -19,32 +19,42 @@ The cards played and whether the decisions made were winning decisions
 
 ## State Space
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-Cards on the board (5 cards) 
-Agent's card (2 cards)
-Villain's card (2 cards)
-Agent's Stack Size ($100) 
-Villain's Stack Size ($100) 
+The state space is a dictionary containing 
+- Agent's card (2-tuple representing the cards on the table)
+- Villain's card (2-tuple representing the cards on the table)
+- Cards on the table (5-tuple representing the cards on the table)
+- Agent's Stack Size (An integer in the range {0, 200}) 
+- Villain's Stack Size (An integer in the range {0, 200}) 
 
 ## Action Space
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-The action is a dictionary mapping with the following mapping
-1 : Raise $100 ,
-2 : Fold
+The action is a dictionary with the following mapping
+- 0 : Raise.
+- 1 : Fold.
 ## Rewards
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-A reward of 1 is given if the agent wins the hand.
-A reward of 0 if the agent ties with the villain or folds.
-A reward of -1 is given if the agent loses the hand.
+- A reward of 1 is given if the agent wins the hand.
+- A reward of 0 if the agent ties with the villain or if the agent folds.
+- A reward of -1 is given if the agent loses the hand.
 
 ## RL Algorithm 
+"Proximal Policy Optimization Algorithms" Paper: https://arxiv.org/pdf/1707.06347.pdf
+
+We used PPO. PPO stands for Proximal Policy Optimization. It is an on-policy, model-free policy gradient-based approach.
+
+We used the ray rllib implementation of PPO. We set the gamma to be 0.9, the learning rate to be 0.01, and the kl coefficient to be 0.3. 
+The number of rollouts was set to 4. We set the number of gpus to be 0. 
 
 ## Starting State [if applicable]
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-At the start, each player will be dealt two cards and five cards will be dealt on the table. Also, each player will start with a stack of $100. 
+At the start, each player will be dealt two cards and five cards will be dealt on the table. Also, each player will start with a stack of 100. 
 
 ## Episode End [if applicable]
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-The episode will end in one of several scenarios: the agent folds, if the agent raises and the villain folds, and if the agent raises, the villain raises, and they go to showdown.  
+The episode will terminate in one of several scenarios: 
+- The agent folds
+- The agent raises and the villain folds
+- The agent raises, the villain raises, and they go to showdown to see who wins the hand or if they draw.  
 
 ## Results
 
