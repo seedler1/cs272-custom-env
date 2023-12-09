@@ -38,7 +38,11 @@ The action is a dictionary with the following mapping
 - A reward of -1 is given if the agent loses the hand.
 
 ## RL Algorithm 
+"Proximal Policy Optimization Algorithms" Paper: https://arxiv.org/pdf/1707.06347.pdf
+We used PPO. PPO stands for Proximal Policy Optimization. It is an on-policy, model-free policy gradient-based approach.
 
+We used the ray rllib implementation of PPO. We set the gamma to be 0.9, the learning rate to be 0.01, and the kl coefficient to be 0.3. 
+The number of rollouts was set to 4. We set the number of gpus to be 0. 
 
 ## Starting State [if applicable]
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
