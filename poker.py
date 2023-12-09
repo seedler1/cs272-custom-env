@@ -7,6 +7,17 @@ from random import shuffle #shuffles a list
 from pdb import set_trace
 
 
+def card_to_int(suit, rank):
+    """
+    Converts a card into an integer to store in the observation space
+    :param suit: suit of a card (0->3, refer to Card class)
+    :param rank: rank of a card (2->14, refer to Card class)
+    :return: integer representing the unique card
+    """
+    rank_modified = rank - 2
+    return 13 * suit + rank_modified
+
+
 class Card:
     """Represents a card of a standard poker deck.
     The rank is an integer from 2 to 14. It starts at 2 to be more intuitive.
@@ -22,7 +33,7 @@ class Card:
 
     def __init__(self, suit=0, rank=2):
         """
-        Initializes a card
+        Initializes a card based on a given suit and rank
         :param suit: suit of card (defaults to 0 for 'Clubs')
         :param rank: rank of card (defaults to 2)
         """
@@ -32,6 +43,14 @@ class Card:
         else:
             self.suit = suit
             self.rank = rank
+
+
+    def __init__(self, card_int):
+        """
+        Initializes a card based on a given unique card int
+        :param suit: suit of card (defaults to 0 for 'Clubs')
+        :param rank: rank of card (defaults to 2)
+                """
 
     def __str__(self):
         """

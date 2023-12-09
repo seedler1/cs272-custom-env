@@ -10,6 +10,31 @@ from gymnasium import spaces
 # table = poker.Hand('Table')
 
 
+def card_to_int(suit, rank):
+    """
+    Converts a card into an integer to store in the observation space
+    :param suit: suit of a card (0->3, refer to Card class)
+    :param rank: rank of a card (2->14, refer to Card class)
+    :return: integer representing the unique card
+    """
+    rank_modified = rank - 2
+    return 13 * suit + rank_modified
+
+def int_to_card(card_int):
+    """
+    Converts an integer into a card to store in the observation space
+    integer representing the unique card
+    :param card_int: integer representing a specific card
+    :return: suit of a card (0->3, refer to Card class) and rank of a card (2->14, refer to Card class)
+    """
+    rank_modified = card_int % 13
+    rank = rank_modified + 2
+    suit = (card_int - rank_modified)/13
+    return suit, rank
+
+
+
+
 class PokerWorldEnv(gym.Env):
     def __init__(self):
         # We have 2 actions, corresponding to "Raise", "Fold"
