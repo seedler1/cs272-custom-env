@@ -28,7 +28,7 @@ The state space is a dictionary containing
 
 ## Action Space
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-The action is a dictionary with the following mapping
+The action shape is (1,) in the range {0, 1} indicating whether to raise or fold. Note that the action raises the entire stack (in poker terms, "raise all-in"). 
 - 0 : Raise.
 - 1 : Fold.
 ## Rewards
@@ -42,7 +42,7 @@ The action is a dictionary with the following mapping
 
 We used PPO. PPO stands for Proximal Policy Optimization. It is an on-policy, model-free policy gradient-based approach.
 
-We used the ray rllib implementation of PPO. We set the gamma to be 0.9, the learning rate to be 0.01, and the kl coefficient to be 0.3. 
+We used the ray rllib implementation of PPO. We set the gamma to be 0.9, the learning rate to be 0.01. 
 The number of rollouts was set to 4. We set the number of gpus to be 0. 
 
 ## Starting State [if applicable]
