@@ -17,6 +17,7 @@ if __name__ == '__main__':
         iteration += 1
         deck1 = poker.Deck()
         deck1.shuffle()
+       # print(deck1.card_dict)
 
         players = list()
         for name in names:

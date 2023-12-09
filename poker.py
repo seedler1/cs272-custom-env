@@ -19,6 +19,9 @@ class Card:
     suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
     rank_names = [None, None, '2', '3', '4', '5', '6', '7',
                   '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+    
+    
+    
 
     def __init__(self, suit=0, rank=2):
         """
@@ -71,6 +74,11 @@ class Deck:
         """
         used_pairs = [(card.suit, card.rank) for card in used_cards]
         self.cards = [Card(x, y + 2) for x in range(4) for y in range(13) if (x, y) not in used_pairs]
+        self.card_dict = {(suit, rank) : 0 for suit in Card.suit_names for rank in Card.rank_names[1: -1]}
+        n = 1 
+        for i in self.card_dict:
+            self.card_dict[i] += n 
+            n += 1
 
     def __str__(self):
         """
@@ -100,9 +108,12 @@ class Deck:
         # tuples are immutable, so we need to know how many tuples will be in each
         num_cards = len(self.cards)
         if num_cards == 2: # if hand of agent or villain
-            tuple_tuple = (self.cards[0].print_tuple, self.cards[1].print_tuple)
+            tuple_tuple = (self.card_dict[self.cards[0].print_tuple], self.card_dict[self.cards[1].print_tuple])
         else: # if table
-            tuple_tuple = (self.cards[0].print_tuple, self.cards[1].print_tuple, self.cards[2].print_tuple, self.cards[3].print_tuple, self.cards[4].print_tuple)
+            tuple_tuple = (self.card_dict[self.cards[0].print_tuple], 
+                           self.card_dict[self.cards[1].print_tuple],
+                           self.card_dict[self.cards[2].print_tuple], self.card_dict[self.cards[3].print_tuple],
+                           self.card_dict[self.cards[4].print_tuple])
         return tuple_tuple
 
     def shuffle(self):
