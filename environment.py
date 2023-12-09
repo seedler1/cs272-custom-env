@@ -43,18 +43,17 @@ class PokerWorldEnv(gym.Env):
         # any of the following are okay for the observation space (1,2), "2 of hearts", "2H"
         self.observation_space = spaces.Dict(
             {
-                "agent": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)),
-                "agent's best hand": int,
-                "agent's highest card": int,
-                "villain": spaces.Tuple(spaces.Discrete(52), spaces.Discrete(52)), #unknown to agent
-                "villain's best hand": int, #unknown to agent
-                "villain's highest card": int, #unknown to agent
-                "table": spaces.Tuple(spaces.Discrete(52),
+                "agent": spaces.Tuple((spaces.Discrete(52), spaces.Discrete(52))),
+               # "agent's best hand": int,
+              #  "agent's highest card": int,
+                "villain": spaces.Tuple((spaces.Discrete(52), spaces.Discrete(52))), #unknown to agent
+               # "villain's best hand": int, #unknown to agent
+               # "villain's highest card": int, #unknown to agent
+                "table": spaces.Tuple((spaces.Discrete(52),
                                       spaces.Discrete(52),
                                       spaces.Discrete(52),
                                       spaces.Discrete(52), 
-                                      spaces.Discrete(52)),
-                "pot": spaces.Discrete(200),
+                                      spaces.Discrete(52))),
                 "agent_stack": spaces.Discrete(100),
                 "villain_stack": spaces.Discrete(100),
             }
@@ -246,8 +245,8 @@ class PokerWorldEnv(gym.Env):
 
         # if want cards for each to be a tuple of tuples
         self._agent_cards = agent.print_tuple_tuple()
-        self._villain_cards = agent.print_tuple_tuple()
-        self._cards = agent.print_tuple_tuple()
+        self._villain_cards = villain.print_tuple_tuple()
+        self._table = table.print_tuple_tuple()
 
         # if want to get the best hand details for both the agent and villain in one quick part
         # so we don't need to access things later
@@ -260,7 +259,7 @@ class PokerWorldEnv(gym.Env):
         # villain_hand_value, villain_highest_card = self._hands(villain, table)
 
         self._villain_stack = 100
-        self._hero_stack = 100
+        self._agent_stack = 100
 
         observation = self._get_obs()
         info = self._get_info()
@@ -295,52 +294,52 @@ class PokerWorldEnv(gym.Env):
             if (self._has_something(self._villain_cards)):
                 if random.random() <= 0.75: 
                     villain_raised = True
-                    if self._hands(self._villain_cards) > self._hands(self._hero_cards):
+                    if self._hands(self._villain_cards) > self._hands(self._agent_cards):
                         self._villain_stack = 200
-                        self._hero_stack = 0
-                    elif self._hands(self._hero_cards) > self._hands(self._villain_cards):
+                        self._agent_stack = 0
+                    elif self._hands(self._agent_cards) > self._hands(self._villain_cards):
                         self._villain_stack = 0
-                        self._hero_stack = 200
+                        self._agent_stack = 200
                     else:
                         self._villain_stack = 100
-                        self._hero_stack = 100
+                        self._agent_stack = 100
                 else:
                     villain_folded = True
             else:
                 if random.random() <= 0.10: 
                     villain_raised = True 
-                    if self._hands(self._villain_cards) > self._hands(self._hero_cards):
+                    if self._hands(self._villain_cards) > self._hands(self._agent_cards):
                         self._villain_stack = 200
-                        self._hero_stack = 0
-                    elif self._hands(self._hero_cards) > self._hands(self._villain_cards):
+                        self._agent_stack = 0
+                    elif self._hands(self._agent_cards) > self._hands(self._villain_cards):
                         self._villain_stack = 0
-                        self._hero_stack = 200
+                        self._agent_stack = 200
                     else:
                         self._villain_stack = 100
-                        self._hero_stack = 100
+                        self._agent_stack = 100
                 else:
                     villain_folded = True
         elif action == 2: # Agent decides to fold
             self._villain_stack = 100
-            self._hero_stack = 100
+            self._agent_stack = 100
         
         
         # An episode is done iff the agent has reached the target
-        terminated = self._villain_stack == 200 or self._hero_stack == 200 or action == 2 or tied or villain_folded
-        if (terminated and self._hero_stack == 200 and self._villain_stack == 0) or (terminated and villain_folded):
+        terminated = self._villain_stack == 200 or self._agent_stack == 200 or action == 2 or tied or villain_folded
+        if (terminated and self._agent_stack == 200 and self._villain_stack == 0) or (terminated and villain_folded):
             reward = 1
         elif terminated and action == 2:
             reward = 0
         elif terminated and tied:
             reward = 0
-        elif terminated and self._villain_stack == 200 and self._hero_stack == 0:
+        elif terminated and self._villain_stack == 200 and self._agent_stack == 0:
             reward = -1
         
         observation = self._get_obs()
-        info = self._get_info()
+       # info = self._get_info()
 
 
-        return observation, reward, terminated, False, info        
+        return observation, reward, terminated, False, info                
     
 # %%
 # Close
