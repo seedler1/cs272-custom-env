@@ -39,6 +39,7 @@ The action is a dictionary with the following mapping
 
 ## RL Algorithm 
 "Proximal Policy Optimization Algorithms" Paper: https://arxiv.org/pdf/1707.06347.pdf
+
 We used PPO. PPO stands for Proximal Policy Optimization. It is an on-policy, model-free policy gradient-based approach.
 
 We used the ray rllib implementation of PPO. We set the gamma to be 0.9, the learning rate to be 0.01, and the kl coefficient to be 0.3. 
