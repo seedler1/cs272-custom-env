@@ -23,13 +23,13 @@ The state space is a dictionary containing
 - Agent's card (2-tuple representing the cards on the table)
 - Villain's card (2-tuple representing the cards on the table)
 - Cards on the table (5-tuple representing the cards on the table)
-- Agent's Stack Size (An integer in the range {0, 100}) 
-- Villain's Stack Size (An integer in the range {0, 100}) 
+- Agent's Stack Size (An integer in the range {0, 200}) 
+- Villain's Stack Size (An integer in the range {0, 200}) 
 
 ## Action Space
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
 The action is a dictionary with the following mapping
-- 1 : Raise 100.
+- 1 : Raise.
 - 2 : Fold.
 ## Rewards
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
