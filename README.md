@@ -28,7 +28,7 @@ The state space is a dictionary containing
 
 ## Action Space
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-The action is a dictionary with the following mapping
+The action shape is (1,) in the range {0, 1} indicating whether to raise or fold. Note that the action raises the entire stack (in poker terms, "raise all-in"). 
 - 0 : Raise.
 - 1 : Fold.
 ## Rewards
