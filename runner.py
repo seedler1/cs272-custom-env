@@ -25,7 +25,7 @@ print('----------------')
 
 algo = DQN(config=config)
 
-for _ in range(10):
+for _ in range(50):
     algo.train()
 
 
