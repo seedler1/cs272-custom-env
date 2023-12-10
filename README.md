@@ -40,7 +40,7 @@ The action shape is (1,) in the range {0, 1} indicating whether to raise or fold
 - A reward of -1 is given if the agent loses the hand.
 
 ## RL Algorithm 
-We used the DQN algorithm.
+We used the DQN algorithm.  The original paper can be found here https://arxiv.org/pdf/1312.5602.pdf
 
 [prev]"Proximal Policy Optimization Algorithms" Paper: https://arxiv.org/pdf/1707.06347.pdf
 
