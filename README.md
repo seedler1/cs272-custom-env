@@ -17,7 +17,7 @@ The people who will use this RL module are people who are in interested in NLHE 
 
 The cards played and whether the decisions made were winning decisions
 
-Note: the code runs on Python version 3.8.18
+**Note:** the code runs on Python version 3.8.18
 
 ## State Space
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
