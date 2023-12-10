@@ -301,7 +301,19 @@ class PokerWorldEnv(gym.Env):
         
         if action == 0: # If the agent decides to Raise
             if (self._has_something(self._villain, self._table_cards)):
-                if random.random() <= 0.75: 
+                """
+                villain_raised = True
+                if self._hands(self._villain, self._table_cards) > self._hands(self._agent, self._table_cards):
+                    self._villain_stack = 200
+                    self._agent_stack = 0
+                elif self._hands(self._agent, self._table_cards) > self._hands(self._villain, self._table_cards):
+                    self._villain_stack = 0
+                    self._agent_stack = 200
+                else:
+                    self._villain_stack = 100
+                    self._agent_stack = 100
+                """
+                if random.random() < 0.90: 
                     villain_raised = True
                     if self._hands(self._villain, self._table_cards) > self._hands(self._agent, self._table_cards):
                         self._villain_stack = 200
@@ -314,8 +326,11 @@ class PokerWorldEnv(gym.Env):
                         self._agent_stack = 100
                 else:
                     villain_folded = True
+                
             else:
-                if random.random() <= 0.10: 
+                #villain_folded = True
+                
+                if random.random() < 0.10: 
                     villain_raised = True 
                     if self._hands(self._villain, self._table_cards) > self._hands(self._agent, self._table_cards):
                         self._villain_stack = 200
@@ -328,16 +343,18 @@ class PokerWorldEnv(gym.Env):
                         self._agent_stack = 100
                 else:
                     villain_folded = True
+                
+               #villain_folded = True
         elif action == 1: # Agent decides to fold
             self._villain_stack = 100
             self._agent_stack = 100
         
         
         # An episode is done iff the agent has reached the target
-        terminated = self._villain_stack == 200 or self._agent_stack == 200 or action == 2 or tied or villain_folded
+        terminated = self._villain_stack == 200 or self._agent_stack == 200 or action == 1 or tied or villain_folded
         if (terminated and self._agent_stack == 200 and self._villain_stack == 0) or (terminated and villain_folded):
             reward = 1
-        elif terminated and action == 2:
+        elif terminated and action == 1:
             reward = 0
         elif terminated and tied:
             reward = 0

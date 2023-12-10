@@ -7,7 +7,58 @@ from ray.rllib.algorithms.sac.sac import SACConfig, SAC
 from ray.rllib.algorithms.ppo import PPOConfig, PPO
 
 
-"""
+
+import matplotlib.pyplot as plt
+import torch
+import matplotlib
+
+is_ipython = 'inline' in matplotlib.get_backend()
+if is_ipython:
+    from IPython import display
+
+plt.ion()
+
+
+env = PokerWorldEnv()
+
+# Get number of actions from gym action space
+n_actions = env.action_space.n
+# Get the number of state observations
+state, info = env.reset()
+n_observations = len(state)
+
+rewards = []
+mean_rewards = []
+
+def plot_durations(show_result=False):
+    plt.figure(1)
+    durations_t = torch.tensor(rewards, dtype=torch.float)
+    if show_result:
+        plt.title('Result')
+    else:
+        plt.clf()
+        plt.title('Training...')
+    plt.xlabel('Episode')
+    plt.ylabel('Episode reward mean')
+    # Take 100 episode averages and plot them too
+    mean_rewards.append(durations_t.unfold(0, 1, 1).mean().view(-1).numpy()[0])
+    episode_r = torch.tensor(mean_rewards, dtype=torch.float)
+   
+    plt.plot(episode_r.numpy())
+
+    
+    plt.pause(0.001)  # pause a bit so that plots are updated
+    if is_ipython:
+        if not show_result:
+            display.display(plt.gcf())
+            display.clear_output(wait=True)
+        else:
+            display.display(plt.gcf())
+
+
+
+# The following is DQN. Out of all the other algorithms in rayllib, it works the best with our environment
+
 def env_creator(env_config):
     return PokerWorldEnv() # custom env 
 
@@ -26,9 +77,9 @@ print('----------------')
 
 algo = DQN(config=config)
 
-for _ in range(50): # 50 means 50000 episodes
+for _ in range(500): # 50 means 50000 episodes, 10 means 10000 episodes
     algo.train()
-"""
+
 
 
 # SAC does not work with our environment unfortunately. 
@@ -52,7 +103,8 @@ for _ in range(20):
 
 """
 
-# The follow 
+"""
+# The following algorithm is PPO. Unfortunately, it does not run very well
 def env_creator(env_config):
     return PokerWorldEnv() # custom env 
 
@@ -71,21 +123,46 @@ algo = PPO(config=config)
 for _ in range(25):
     algo.train()
 
+"""
 
 """
+# The following is code for random action taken by agent
 
 obs, _ = env.reset()
 
-num_steps = 100
-for _ in range(num_steps):
+num_steps = 500
+for e in range(num_steps):
     # taking a random action
     a = env.action_space.sample()
     
     obs, r, terminated, truncaed, _ = env.step(a)
     env.step(a)
+    obs, _ = env.reset() 
     
-    if terminated or truncaed:
-        obs, _ = env.reset() 
+    rewards.append(r)
+    plot_durations()
+        
         
 env.close()
+"""
+
+"""
+# The following is code for agent always raising
+
+obs, _ = env.reset()
+
+num_steps =500
+for e in range(num_steps):
+    # taking a random action
+    a = 0
+    
+    obs, r, terminated, truncaed, _ = env.step(a)
+    env.step(a)
+    obs, _ = env.reset() 
+    
+    rewards.append(r)
+    plot_durations()
+        
+env.close()
+
 """

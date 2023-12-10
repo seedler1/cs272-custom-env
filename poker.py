@@ -100,11 +100,6 @@ class Deck:
         """
         used_pairs = [(card.suit, card.rank) for card in used_cards]
         self.cards = [Card(x, y + 2) for x in range(4) for y in range(13) if (x, y) not in used_pairs]
-        self.card_dict = {(suit, rank) : 0 for suit in suits for rank in ranks}
-        n = 0
-        for i in self.card_dict:
-            self.card_dict[i] += n 
-            n += 1
 
     def __str__(self):
         """
@@ -220,7 +215,6 @@ class Hand(Deck):
         Initializes a hand's name (player or table)
         :param label: player or table (defaults to empty string)
         """
-        super().__init__()
         self.cards = []
         self.label = label
 
