@@ -17,6 +17,8 @@ The people who will use this RL module are people who are in interested in NLHE 
 
 The cards played and whether the decisions made were winning decisions
 
+**Note:** the code runs on Python version 3.8.18
+
 ## State Space
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
 The state space is a dictionary containing 
@@ -28,7 +30,7 @@ The state space is a dictionary containing
 
 ## Action Space
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-The action is a dictionary with the following mapping
+The action shape is (1,) in the range {0, 1} indicating whether to raise or fold. Note that the action raises the entire stack (in poker terms, "raise all-in"). 
 - 0 : Raise.
 - 1 : Fold.
 ## Rewards
@@ -38,11 +40,13 @@ The action is a dictionary with the following mapping
 - A reward of -1 is given if the agent loses the hand.
 
 ## RL Algorithm 
-"Proximal Policy Optimization Algorithms" Paper: https://arxiv.org/pdf/1707.06347.pdf
+We used the DQN algorithm.  The original paper can be found here https://arxiv.org/pdf/1312.5602.pdf
 
-We used PPO. PPO stands for Proximal Policy Optimization. It is an on-policy, model-free policy gradient-based approach.
+[prev]"Proximal Policy Optimization Algorithms" Paper: https://arxiv.org/pdf/1707.06347.pdf
 
-We used the ray rllib implementation of PPO. We set the gamma to be 0.9, the learning rate to be 0.01, and the kl coefficient to be 0.3. 
+[prev] We used PPO. PPO stands for Proximal Policy Optimization. It is an on-policy, model-free policy gradient-based approach.
+
+We used the ray rllib implementation of PPO. We set the gamma to be 0.9, the learning rate to be 0.01. 
 The number of rollouts was set to 4. We set the number of gpus to be 0. 
 
 ## Starting State [if applicable]
