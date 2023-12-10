@@ -38,9 +38,11 @@ The action shape is (1,) in the range {0, 1} indicating whether to raise or fold
 - A reward of -1 is given if the agent loses the hand.
 
 ## RL Algorithm 
-"Proximal Policy Optimization Algorithms" Paper: https://arxiv.org/pdf/1707.06347.pdf
+We used the DQN algorithm.
 
-We used PPO. PPO stands for Proximal Policy Optimization. It is an on-policy, model-free policy gradient-based approach.
+[prev]"Proximal Policy Optimization Algorithms" Paper: https://arxiv.org/pdf/1707.06347.pdf
+
+[prev] We used PPO. PPO stands for Proximal Policy Optimization. It is an on-policy, model-free policy gradient-based approach.
 
 We used the ray rllib implementation of PPO. We set the gamma to be 0.9, the learning rate to be 0.01. 
 The number of rollouts was set to 4. We set the number of gpus to be 0. 
