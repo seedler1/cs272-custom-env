@@ -85,14 +85,14 @@ class Card:
             self.suit = suit
             self.rank = rank
 
-
+    """
     def __init__(self, card_int):
-        """
+        
         Initializes a card based on a given unique card int
         :param suit: suit of card (defaults to 0 for 'Clubs')
         :param rank: rank of card (defaults to 2)
-                """
-
+        
+    """
     def __str__(self):
         """
         Returns the name of the card in a universally understood format
