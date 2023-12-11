@@ -59,7 +59,7 @@ def plot_durations(show_result=False):
 
 
 
-# The following is DQN. Out of all the other algorithms in rayllib, it works the best with our environment
+# The following is DQN.
 
 #"""
 def env_creator(env_config):
@@ -74,14 +74,14 @@ config = DQNConfig()
 config = config.environment(env="Poker")
 
 print('----------------')
-print(config.env_config) # Initially 0 {} when professor ran
-print(config.exploration_config) #
-print(config.num_rollout_workers) # Iniially 0 when professor ran
+print(config.env_config) 
+print(config.exploration_config) 
+print(config.num_rollout_workers) 
 print('----------------')
 
 algo = DQN(config=config)
 
-for _ in range(160): # 50 means 50000 episodes, 10 means 10000 episodes (we think)
+for _ in range(160): # 160,000 episodes to train
     algo.train()
 #"""
 
