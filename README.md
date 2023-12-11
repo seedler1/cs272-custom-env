@@ -79,6 +79,6 @@ We first implemented two separate occasions of PPO.  Even though both PPO’s ra
 
 When we compared both the runs of PPO and DQN, we found that although the longer PPO run produced better overall results than that of both DQN implementations starting around 55,000 episodes, the shorter PPO run always had an episode reward mean that was lower than both DQN runs.  This proved that PPO wasn’t nearly as consistent as DQN when it was used in our poker environment.  Additionally, the runtimes for PPO (18.79 and 23.11 minutes) were far faster than that of the longest DQN run (nearly 2 hours).  So although PPO is more time efficient, DQN is far more consistent in its episode reward mean values.
 
-![Two runs of DQN vs two runs of PPO](/assets/images/Two_runs_of_DQN_vs_two_runs_of_PPO.png)
+![Two runs of DQN vs two runs of PPO](/images/Two_runs_of_DQN_vs_two_runs_of_PPO.png)
 
 Therefore, we conclude that DQN was the best tested algorithm (non-reinforcement learning and reinforcement learning) for our poker environment.  
