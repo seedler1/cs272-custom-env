@@ -114,7 +114,7 @@ for _ in range(160):
 
 obs, _ = env.reset()
 
-num_steps = 1000 # episode count #500
+num_steps = 1000
 for e in range(num_steps):
     # taking a random action
     a = env.action_space.sample()
