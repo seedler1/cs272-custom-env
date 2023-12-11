@@ -36,8 +36,8 @@ The action shape is (1,) in the range {0, 1} indicating whether to raise or fold
 - 1 : Fold.
 ## Rewards
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-- A reward of 1 is given if the agent wins the hand.
-- A reward of 0 if the agent ties with the villain in the hand type, if the agent folds, or if the villain folds.
+- A reward of 1 is given if the agent wins the hand or the villain folds.
+- A reward of 0 if the agent ties with the villain in the hand type or if the agent folds.
 - A reward of -1 is given if the agent loses the hand.
 
 ## RL Algorithm 
