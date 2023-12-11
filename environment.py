@@ -1,38 +1,13 @@
+"""
+The following code is a modification of the following template
+https://github.com/sjsu-interconnect/cs272-custom-env/blob/main/intro-custom-env-and-ray/environment_creation.py
+
+"""
 import gymnasium as gym
 import random
-import poker  # https://github.com/Sondar4/poker-sim/blob/master/poker.py
+import poker  # modified version of https://github.com/Sondar4/poker-sim/blob/master/poker.py
 from gymnasium import spaces
 import numpy as np
-
-
-# Hand classes that can keep track of the cards of the agent, villain, and table respectively
-# agent = poker.Hand('Agent')
-# villain = poker.Hand('Villain')
-# table = poker.Hand('Table')
-
-
-def card_to_int(suit, rank):
-    """
-    Converts a card into an integer to store in the observation space
-    :param suit: suit of a card (0->3, refer to Card class)
-    :param rank: rank of a card (2->14, refer to Card class)
-    :return: integer representing the unique card
-    """
-    rank_modified = rank - 2
-    return 13 * suit + rank_modified
-
-def int_to_card(card_int):
-    """
-    Converts an integer into a card to store in the observation space
-    integer representing the unique card
-    :param card_int: integer representing a specific card
-    :return: suit of a card (0->3, refer to Card class) and rank of a card (2->14, refer to Card class)
-    """
-    rank_modified = card_int % 13
-    rank = rank_modified + 2
-    suit = (card_int - rank_modified)/13
-    return suit, rank
-
 
 
 
@@ -55,29 +30,10 @@ class PokerWorldEnv(gym.Env):
                 "villain_stack": spaces.Discrete(201),
             }
         )
-        
 
-        # pls change
-# # %% Following won't work well bc we would need to call the deck three separate times
-# # Dealing the cards
-# # Parameters:
-# #   num_of_cards : The number of cards dealt
-# # Returns:
-# #   A tuple of number representing the cards
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # Author: Jennifer Chun
-#
-#     def _deal(self, num_of_cards):
-#         """
-#         Deals specified number of cards to the player
-#         """
-#
-#         #pass
 
 # %%
-#<<<<<<< HEAD
-# Dealing a specified number of cards from the deck with their corresponding
-# suit and rank
+# Dealing all the cards to the agent, the villain, and the table
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
 
@@ -91,24 +47,22 @@ class PokerWorldEnv(gym.Env):
         Hand (applying to agent, villain, and table) are of class Hand
 
         Cards are in the form of class Card
-        :returns agent's hand, villain's hand, and table's hand(cards)
+        :returns agent's hand, villain's hand, and table's hand(cards) of class Hand
         """
         # creates then shuffles the deck
         deck = poker.Deck()
         deck.shuffle()
 
-        # gives corresponding cards to the players and the table
+        # creates Hand classes for the players and the table
         agent = poker.Hand('Agent')
         villain = poker.Hand('Villain')
         table = poker.Hand('Table')
 
+        # gives corresponding cards to the players and the table
         deck.move_cards(agent, 2)
         deck.move_cards(villain, 2)
         deck.move_cards(table, 5)
 
-        # 12-8-23 10:15 AM
-        # How to access the observations spaces from this method???
-        #self.observation_space. ???
         return agent, villain, table
 
         #pass
@@ -116,16 +70,10 @@ class PokerWorldEnv(gym.Env):
 
 
 # %%
-# Getting the kind of hands that either play has given their hole cards and 
-# what's on the board
-#=======
-# Getting the kind of hands (ranking) that either play has given their hole cards
-# and what's on the board.
-#>>>>>>> b6f2d1bb4638cc2d2d06b14ba061ddb163b245d4
+# Getting the kind of hands that a player has in their hands and the table
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
 
-    #def _hands(self, hole_cards):
     def _hands(self, player, table):
         """
         Returns the details of the best hand that the player has (hand value, name of hand, and highest card)
@@ -142,12 +90,9 @@ class PokerWorldEnv(gym.Env):
     
 # %%
 # If the villain "has something" (in our case, means the villain has 
-# something greater than just "high card") 
+# something greater than just a "high card")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Author: Jennifer Chun
-
-    #def _has_something(self, hole_cards):
-     #  pass
 
     def _has_something(self, villain, table):
        """
@@ -219,33 +164,19 @@ class PokerWorldEnv(gym.Env):
 
     def reset(self, seed=None, options=None):
 
-        # if trying to deal cards separately (may run into issues if using classes)
-        # self._villain_cards = self._deal(2)
-        # self._agent_cards = self._deal(2)
-        # self._cards = self._deal(5)
-
-        # if dealing cards altogether, output the respective classes of Hand
+        # deals all cards to the player and table in the form of Hand classes
         agent, villain, table = self._deal_all()
-
-        # only needed if we need to access the Hand classes outside this function
-        # global agent = agent
-        # global villain = villain
-        # global table = table
-
-        # if okay with cards in being a list of tuples
-        # self._agent_cards = agent.print_list_tuple()
-        # self._villain_cards = agent.print_list_tuple()
-        # self._cards = agent.print_list_tuple()
         
-      #  agent_card_1 , agent_card_2 = agent.print_tuple_tuple()
-      #  villain_cards_1 , villain_cards_2 = villain.print_tuple_tuple()
-      #  table_cards_1 , tuple_cards_2 , tuple_cards_3 , tuple_cards_4 , tuple_cards_5 = table.print_tuple_tuple()
+    #  agent_card_1 , agent_card_2 = agent.print_tuple_tuple()
+    #  villain_cards_1 , villain_cards_2 = villain.print_tuple_tuple()
+    #  table_cards_1 , tuple_cards_2 , tuple_cards_3 , tuple_cards_4 , tuple_cards_5 = table.print_tuple_tuple()
 
-        # if want cards for each to be a tuple of tuples
+        # saving the cards as a tuple of tuples for each hand
         self._agent_cards = agent.print_tuple_tuple_tuple()
         self._villain_cards = villain.print_tuple_tuple_tuple()
         self._table = table.print_tuple_tuple_tuple()
-        
+
+        # saving the corresponding Hand classes for future reference
         self._agent = agent
         self._villain = villain
         self._table_cards = table
@@ -300,7 +231,7 @@ class PokerWorldEnv(gym.Env):
         villain_raised = False # If the villain decides to raise.
         
         if action == 0: # If the agent decides to Raise
-            if (self._has_something(self._villain, self._table_cards)):
+            if (self._has_something(self._villain, self._table_cards)): # If the villain has a card better than a "high card"
                 """
                 villain_raised = True
                 if self._hands(self._villain, self._table_cards) > self._hands(self._agent, self._table_cards):
@@ -313,38 +244,42 @@ class PokerWorldEnv(gym.Env):
                     self._villain_stack = 100
                     self._agent_stack = 100
                 """
-                if random.random() < 0.90: 
+                if random.random() < 0.90: # 90% of the time, villain will bet
                     villain_raised = True
+                    # if agent has the better hand, it wins the stack
                     if self._hands(self._villain, self._table_cards) > self._hands(self._agent, self._table_cards):
                         self._villain_stack = 200
                         self._agent_stack = 0
+                    # if villain has the better hand, it wins the stack
                     elif self._hands(self._agent, self._table_cards) > self._hands(self._villain, self._table_cards):
                         self._villain_stack = 0
                         self._agent_stack = 200
+                    # if both agent and villain have the same hand, both tie and get their corresponding stack back
                     else:
                         self._villain_stack = 100
                         self._agent_stack = 100
-                else:
+                else: # 10% of the time, villain will fold
                     villain_folded = True
                 
-            else:
+            else: # Otherwise, if villain's best hand is a "high card"
                 #villain_folded = True
-                
-                if random.random() < 0.10: 
+                if random.random() < 0.10: # 10% of the time, villain will bet
                     villain_raised = True 
+                    # if agent has the better hand, it wins the stack
                     if self._hands(self._villain, self._table_cards) > self._hands(self._agent, self._table_cards):
                         self._villain_stack = 200
                         self._agent_stack = 0
+                    # if villain has the better hand, it wins the stack
                     elif self._hands(self._agent, self._table_cards) > self._hands(self._villain, self._table_cards):
                         self._villain_stack = 0
                         self._agent_stack = 200
+                    # if both agent and villain have the same hand, both tie and get their corresponding stack back
                     else:
                         self._villain_stack = 100
                         self._agent_stack = 100
-                else:
+                else: # 90% of the time, villain will fold
                     villain_folded = True
-                
-               #villain_folded = True
+
         elif action == 1: # Agent decides to fold
             self._villain_stack = 100
             self._agent_stack = 100

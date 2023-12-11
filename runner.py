@@ -79,9 +79,19 @@ print('----------------')
 
 algo = DQN(config=config)
 
-for _ in range(50): # 50 means 50000 episodes, 10 means 10000 episodes
-    algo.train()
+# 12/10/23 11 AM
+# although training more episodes is undeniably better
+# to be practical, we are only doing 40K episodes
+# this runs for roughly 30 minutes and the results stay roughly the same
+# from 40K episodes onward
 
+# 12/10/23/12:45 PM
+# Since I need to be away for a while, I'll try to have the computer train it on as many episodes while I'm gone
+# the PPO did 160K time steps for two different runs to show two different results, so I'm making the DQN do the same
+# to create a fair comparison
+for _ in range(160): # 50 means 50000 episodes, 10 means 10000 episodes (we think)
+    algo.train()
+#"""
 
 
 # SAC does not work with our environment unfortunately. 
@@ -122,7 +132,7 @@ config = config.rollouts(num_rollout_workers=4)
 
 algo = PPO(config=config)
 
-for _ in range(25):
+for _ in range(400):
     algo.train()
 
 """
