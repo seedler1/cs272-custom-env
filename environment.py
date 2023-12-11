@@ -256,6 +256,7 @@ class PokerWorldEnv(gym.Env):
                         self._agent_stack = 200
                     # if both agent and villain have the same hand, both tie and get their corresponding stack back
                     else:
+                        tied = True
                         self._villain_stack = 100
                         self._agent_stack = 100
                 else: # 10% of the time, villain will fold
@@ -275,6 +276,7 @@ class PokerWorldEnv(gym.Env):
                         self._agent_stack = 200
                     # if both agent and villain have the same hand, both tie and get their corresponding stack back
                     else:
+                        tied = True
                         self._villain_stack = 100
                         self._agent_stack = 100
                 else: # 90% of the time, villain will fold
