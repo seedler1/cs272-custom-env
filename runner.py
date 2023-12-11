@@ -103,7 +103,7 @@ config = config.rollouts(num_rollout_workers=4)
 
 algo = PPO(config=config)
 
-for _ in range(400):
+for _ in range(160):
     algo.train()
 
 """
