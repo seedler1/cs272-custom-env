@@ -7,7 +7,7 @@ from ray.rllib.algorithms.sac.sac import SACConfig, SAC
 from ray.rllib.algorithms.ppo import PPOConfig, PPO
 
 
-
+"""
 import matplotlib.pyplot as plt
 import torch
 import matplotlib
@@ -37,7 +37,8 @@ def plot_durations(show_result=False):
         plt.title('Result')
     else:
         plt.clf()
-        plt.title('Training...')
+        plt.title('Agent Taking Random Actions')
+        #plt.title('Agent Always Raising')
     plt.xlabel('Episode')
     plt.ylabel('Episode reward mean')
     # Take 100 episode averages and plot them too
@@ -55,7 +56,7 @@ def plot_durations(show_result=False):
         else:
             display.display(plt.gcf())
 
-
+"""
 
 # The following is DQN. Out of all the other algorithms in rayllib, it works the best with our environment
 
@@ -67,7 +68,10 @@ register_env("Poker", env_creator)
 # getting the config dict
 # set the environment
 config = DQNConfig()
+config = DQNConfig().training(gamma=0.9, lr=0.01, double_q = True)
 config = config.environment(env="Poker")
+config = config.resources(num_gpus=0) 
+config = config.rollouts(num_rollout_workers=4) 
 
 print('----------------')
 print(config.env_config) # Initially 0 {} when professor ran
@@ -77,7 +81,7 @@ print('----------------')
 
 algo = DQN(config=config)
 
-for _ in range(500): # 50 means 50000 episodes, 10 means 10000 episodes
+for _ in range(50): # 50 means 50000 episodes, 10 means 10000 episodes
     algo.train()
 
 
@@ -130,7 +134,7 @@ for _ in range(25):
 
 obs, _ = env.reset()
 
-num_steps = 500
+num_steps = 1000
 for e in range(num_steps):
     # taking a random action
     a = env.action_space.sample()
@@ -151,7 +155,7 @@ env.close()
 
 obs, _ = env.reset()
 
-num_steps =500
+num_steps =1000
 for e in range(num_steps):
     # taking a random action
     a = 0
@@ -164,5 +168,5 @@ for e in range(num_steps):
     plot_durations()
         
 env.close()
-
 """
+
