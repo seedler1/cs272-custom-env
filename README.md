@@ -15,7 +15,7 @@ The people who will use this RL module are people who are interested in NLHE and
 
 (3) a brief description of the results
 
-The cards played and whether the decisions made were winning decisions.
+We compared the performance of DQN with PPO as well as the policy where the agent is taking random actions and the policy where the agent is always folding. We found that using DQN resulted in the best performance. 
 
 
 ## State Space
@@ -36,9 +36,9 @@ The action shape is (1,) in the range {0, 1} indicating whether to raise or fold
 - 1 : Fold.
 ## Rewards
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
-- A reward of 1 is given if the agent wins the hand.
-- A reward of 0 if the agent ties with the villain in the hand type, if the agent folds, or if the villain folds.
-- A reward of -1 is given if the agent loses the hand.
+- A reward of 1 is given if the agent wins the hand in the showdown or the villain folds.
+- A reward of 0 if the agent ties with the villain in the hand type or if the agent folds.
+- A reward of -1 is given if the agent loses the hand in the showdown.
 
 ## RL Algorithm 
 We used the reinforcement learning algorithm DQN. DQN is a model-free, off-policy reinforcement learning algorithm. We chose this deep RL algorithm specifically because the poker environment per episode required a lot of states (since there are 9 cards randomly selected from the 52 cards in the deck per round/episode, or 52!/43! possibilities to consider) and solving the problem of the environment would've been greatly benefitted from the experience replay buffer utilized in DQN.  Additionally, the ray rllib implementation of DQN was intuitive.   The original paper for DQN can be found [here](https://arxiv.org/pdf/1312.5602.pdf). 
@@ -79,7 +79,7 @@ We first implemented two separate occasions of PPO.  Even though both PPOs ran f
 
 ![Two runs of PPO](/images/Two_runs_of_PPO.png)
 
-When we compared both the runs of PPO and DQN, we found that although the longer PPO run produced overall results that were better than or equal to those of both DQN implementations starting around 60,000 episodes, the shorter PPO run always had an episode reward mean that was lower than both DQN runs.  This proved that PPO wasn’t nearly as consistent as DQN when it was used in our poker environment.  Additionally, the runtimes for PPO (18.79 and 23.11 minutes) were far faster than that of the longest DQN run (nearly 2 hours).  So although PPO was more time efficient, DQN was far more consistent in its episode reward mean values.
+When we compared both the runs of PPO and DQN, we found that although the longer PPO run produced overall results that were better than or equal to those of both DQN implementations starting around 60,000 episodes, the shorter PPO run always had an episode reward mean that was lower than both DQN runs.  This proved that PPO wasn’t nearly as consistent as DQN when it was used in our poker environment.  Additionally, the runtimes for PPO (18.79 and 23.11 minutes) were far faster than that of the longest DQN run (nearly 2 hours) despite all three runs producing exactly 160,000 episodes.  So although PPO was more time efficient, DQN was far more consistent in its episode reward mean values.
 
 ![Two runs of DQN vs two runs of PPO](/images/Two_runs_of_DQN_vs_two_runs_of_PPO.png)
 
