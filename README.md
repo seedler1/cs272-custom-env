@@ -59,7 +59,7 @@ The episode will terminate in one of several scenarios:
 ## Results
 Using TensorBoard, we have plotted the episode reward mean of the DQN algorithm on two separate occasions.  One of the DQN outputs ran for fewer episodes than the other because we did not anticipate how long the DQN training process would take.  But, as it is clearly shown in the graph below, the DQN episode reward mean stayed consistently around the 0.3 value around the 60k episode mark for both runs. The longer DQN run that continued up to 160,000 episodes was able to reach a maximum episode reward mean of approximately 0.4.
 
-!(/assets/images/Two_runs_of_DQN.png)
+![Two runs of DQN](/assets/images/Two_runs_of_DQN.png)
 
 We tested the results of the poker environment test through two non-reinforcement methods.  In our first test, we had the agent take random actions.  After 1000 episodes, its episode reward mean was consistently slightly below 0.10, approximately around 0.08. We attempted to run more episodes, but the program became very slow around the 1000 episode point so we stopped at 1000.
 
