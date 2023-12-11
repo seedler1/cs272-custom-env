@@ -3,11 +3,10 @@ from environment import PokerWorldEnv
 from ray.tune.registry import register_env 
 
 from ray.rllib.algorithms.dqn.dqn import DQNConfig, DQN 
-from ray.rllib.algorithms.sac.sac import SACConfig, SAC
 from ray.rllib.algorithms.ppo import PPOConfig, PPO
 
 
-"""
+
 import matplotlib.pyplot as plt
 import torch
 import matplotlib
@@ -37,8 +36,7 @@ def plot_durations(show_result=False):
         plt.title('Result')
     else:
         plt.clf()
-        plt.title('Agent Taking Random Actions')
-        #plt.title('Agent Always Raising')
+        plt.title('Training...')
     plt.xlabel('Episode')
     plt.ylabel('Episode reward mean')
     # Take 100 episode averages and plot them too
@@ -56,10 +54,14 @@ def plot_durations(show_result=False):
         else:
             display.display(plt.gcf())
 
-"""
+    plt.savefig('Poker_episode_reward_mean_vs_episode.png')
+
+
+
 
 # The following is DQN. Out of all the other algorithms in rayllib, it works the best with our environment
 
+#"""
 def env_creator(env_config):
     return PokerWorldEnv() # custom env
 
@@ -79,41 +81,10 @@ print('----------------')
 
 algo = DQN(config=config)
 
-# 12/10/23 11 AM
-# although training more episodes is undeniably better
-# to be practical, we are only doing 40K episodes
-# this runs for roughly 30 minutes and the results stay roughly the same
-# from 40K episodes onward
-
-# 12/10/23/12:45 PM
-# Since I need to be away for a while, I'll try to have the computer train it on as many episodes while I'm gone
-# the PPO did 160K time steps for two different runs to show two different results, so I'm making the DQN do the same
-# to create a fair comparison
 for _ in range(160): # 50 means 50000 episodes, 10 means 10000 episodes (we think)
     algo.train()
 #"""
 
-
-# SAC does not work with our environment unfortunately. 
-"""
-def env_creator(env_config):
-    return PokerWorldEnv() # custom env 
-
-register_env("Poker", env_creator)
-
-# getting the config dict
-# set the environment
-config = SACConfig().training(gamma=0.9, lr=0.01)
-config = config.environment(env="Poker")
-config = config.resources(num_gpus=0) 
-config = config.rollouts(num_rollout_workers=4) 
-
-algo = SAC(config=config)
-
-for _ in range(20):
-    algo.train()
-
-"""
 
 """
 # The following algorithm is PPO. Unfortunately, it does not run very well
@@ -142,7 +113,7 @@ for _ in range(400):
 
 obs, _ = env.reset()
 
-num_steps = 1000
+num_steps = 500000 # episode count #500
 for e in range(num_steps):
     # taking a random action
     a = env.action_space.sample()
@@ -163,7 +134,7 @@ env.close()
 
 obs, _ = env.reset()
 
-num_steps =1000
+num_steps =500
 for e in range(num_steps):
     # taking a random action
     a = 0
@@ -176,5 +147,5 @@ for e in range(num_steps):
     plot_durations()
         
 env.close()
-"""
 
+"""
