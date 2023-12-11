@@ -61,21 +61,19 @@ def plot_durations(show_result=False):
 # The following is DQN. Out of all the other algorithms in rayllib, it works the best with our environment
 
 def env_creator(env_config):
-    return PokerWorldEnv() # custom env 
+    return PokerWorldEnv() # custom env
 
 register_env("Poker", env_creator)
+
 
 # getting the config dict
 # set the environment
 config = DQNConfig()
-config = DQNConfig().training(gamma=0.9, lr=0.01, double_q = True)
 config = config.environment(env="Poker")
-config = config.resources(num_gpus=0) 
-config = config.rollouts(num_rollout_workers=4) 
 
 print('----------------')
 print(config.env_config) # Initially 0 {} when professor ran
-print(config.exploration_config) # 
+print(config.exploration_config) #
 print(config.num_rollout_workers) # Iniially 0 when professor ran
 print('----------------')
 
