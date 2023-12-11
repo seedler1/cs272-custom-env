@@ -43,7 +43,7 @@ The action shape is (1,) in the range {0, 1} indicating whether to raise or fold
 ## RL Algorithm 
 We used the reinforcement learning algorithm DQN. DQN is a model-free, off-policy reinforcement learning algorithm. We chose this deep RL algorithm specifically because the poker environment per episode required a lot of states (since there are 9 cards randomly selected from the 52 cards in the deck per round/episode, or 52!/43! possibilities to consider) and solving the problem of the environment would've been greatly benefitted from the experience replay buffer utilized in DQN.  Additionally, the ray rllib implementation of DQN was intuitive.   The original paper for DQN can be found [here](https://arxiv.org/pdf/1312.5602.pdf). 
 
-For the ray rllib implementation of DQN, we used its default setting. The action policy is epsilon greedy with an initial epsilon of 1.0 and a final epsilon of 0.02. The epsilon timestep was 10000. The number of rollout workers is 0. 
+For the ray rllib implementation of DQN, we used its default setting. The action policy was epsilon greedy with an initial epsilon of 1.0 and a final epsilon of 0.02. The epsilon timestep was 10000. The number of rollout workers was 0. 
 
 ## Starting State [if applicable]
 <!-- See the Cart Pole Env example https://gymnasium.farama.org/environments/classic_control/cart_pole/ -->
