@@ -62,7 +62,7 @@ def plot_durations(show_result=False):
 
 # The following is DQN.
 
-"""
+#"""
 def env_creator(env_config):
     return PokerWorldEnv() # custom env
 
@@ -84,7 +84,7 @@ algo = DQN(config=config)
 
 for _ in range(160): # 160,000 episodes to train
     algo.train()
-"""
+#"""
 
 
 """
@@ -130,7 +130,7 @@ for e in range(num_steps):
 env.close()
 """
 
-#"""
+"""
 # The following is code for agent always raising
 
 obs, _ = env.reset()
@@ -149,4 +149,4 @@ for e in range(num_steps):
         
 env.close()
 
-#"""
+"""
