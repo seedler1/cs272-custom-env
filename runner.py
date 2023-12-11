@@ -87,7 +87,7 @@ for _ in range(160): # 160,000 episodes to train
 
 
 """
-# The following algorithm is PPO. Unfortunately, it does not run very well
+# The following algorithm is PPO.
 def env_creator(env_config):
     return PokerWorldEnv() # custom env 
 
