@@ -15,7 +15,7 @@ The people who will use this RL module are people who are interested in NLHE and
 
 (3) a brief description of the results
 
-We found that using DQN resulted in better performance than the agent taking only random actions or the agent always folding.
+We compared the performance of DQN with PPO as well as the policy where the agent is takingrandom actions and the policy where the agent is always folding. We found that using DQN resulted in the best performance. 
 
 
 ## State Space
