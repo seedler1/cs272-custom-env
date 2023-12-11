@@ -15,7 +15,7 @@ The people who will use this RL module are people who are interested in NLHE and
 
 (3) a brief description of the results
 
-The cards played and whether the decisions made were winning decisions.
+We found that using RL algorithms performed better than the agent taking only random actions or the agent always folding. 
 
 
 ## State Space
