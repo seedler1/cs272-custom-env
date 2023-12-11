@@ -36,7 +36,8 @@ def plot_durations(show_result=False):
         plt.title('Result')
     else:
         plt.clf()
-        plt.title('Training...')
+        plt.title('Agent Taking Random Actions')
+       #plt.title('Agent Always Raising')
     plt.xlabel('Episode')
     plt.ylabel('Episode reward mean')
     # Take 100 episode averages and plot them too
